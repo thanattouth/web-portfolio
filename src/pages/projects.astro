@@ -1,0 +1,78 @@
+---
+// Import ทุกอย่างที่เราต้องการ
+import Layout from '../layouts/Layout.astro';
+import Footer from '../components/Footer.astro';
+
+// Import "ฐานข้อมูล"
+import { allProjects, allCertificates } from '../data/contents.ts';
+
+// Import "แม่แบบการ์ด"
+import ProjectCard from '../components/cards/ProjectCard.astro';
+import CertificateCard from '../components/cards/CertificateCard.astro';
+
+// กรองโปรเจกต์ (ถ้าคุณอยากแยกโชว์)
+const breadthProjects = allProjects.filter(p => p.type === 'breadth');
+const depthProjects = allProjects.filter(p => p.type === 'depth');
+---
+
+<Layout title="All Initiatives - [Your Name]">
+  <main>
+    
+    <section class="py-20 md:py-24 bg-gray-50 border-b border-gray-200">
+      <div class="container mx-auto px-6 max-w-4xl text-center">
+        <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900">
+          All Initiatives & Credentials
+        </h1>
+        <p class="mt-4 text-lg text-gray-600">
+          A complete archive of my projects, initiatives, and certifications.
+        </p>
+        <a href="/#home" class="mt-6 inline-block text-blue-600 font-semibold hover:underline">
+          &larr; Back to Main Portfolio
+        </a>
+      </div>
+    </section>
+
+    <section class="py-20 md:py-24 bg-white">
+      <div class="container mx-auto px-6 max-w-6xl">
+        
+        <div class="mb-16">
+          <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center md:text-left">
+            The Breadth (Generalist Projects)
+          </h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {breadthProjects.map(project => (
+              <ProjectCard project={project} />
+            ))}
+          </div>
+        </div>
+        
+        <div>
+          <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center md:text-left">
+            The Depth (Specialist Projects)
+          </h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {depthProjects.map(project => (
+              <ProjectCard project={project} />
+            ))}
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="py-20 md:py-24 bg-gray-50 border-t border-gray-200">
+      <div class="container mx-auto px-6 max-w-6xl">
+        <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">
+          Certifications & Credentials
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {allCertificates.map(cert => (
+            <CertificateCard cert={cert} />
+          ))}
+        </div>
+      </div>
+    </section>
+    
+    <Footer />
+  </main>
+</Layout>

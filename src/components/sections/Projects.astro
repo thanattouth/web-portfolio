@@ -1,86 +1,15 @@
 ---
-// =======================================================
-// STEP 1: THE "DATABASE" (แยกข้อมูลออกมา)
-// =======================================================
-// เราสร้าง "พิมพ์เขียว" (Interface) ของโปรเจกต์ก่อน
-interface Project {
-  type: 'breadth' | 'depth'; // 'breadth' = Generalist, 'depth' = Specialist
-  title: string;
-  challenge: string;
-  action: string;
-  result: string; // เปลี่ยน 'learning' เป็น 'result' เพื่อความสอดคล้อง
-  tags: string[];
-  githubUrl?: string; // ? หมายถึง "อาจจะไม่มีก็ได้"
-  demoUrl?: string;
-  writeupUrl?: string;
-}
+// Import "ฐานข้อมูล" และ "การ์ด"
+import { allProjects } from '../../data/contents.ts';
+import ProjectCard from '../cards/ProjectCard.astro';
 
-// นี่คือ "ฐานข้อมูล" ของคุณ
-// คุณสามารถเพิ่ม, ลบ, หรือจัดลำดับโปรเจกต์ที่นี่ได้เลย!
-const allProjects: Project[] = [
-  // --- BREADTH PROJECTS ---
-  {
-    type: 'breadth',
-    title: 'Project Title: Project1',
-    challenge: 'Description',
-    action: 'Description',
-    result: 'Description',
-    tags: ['React', 'Node.js', 'GCP'],
-    githubUrl: '#',
-    demoUrl: '#',
-  },
-  {
-    type: 'breadth',
-    title: 'Project Title: Project2',
-    challenge: 'Description',
-    action: 'Description',
-    result: 'Description',
-    tags: ['Python', 'Flask', 'Docker'],
-    githubUrl: '#',
-  },
-  // --- DEPTH PROJECTS ---
-  {
-    type: 'depth',
-    title: 'Project Title: Project3',
-    challenge: 'Description',
-    action: 'Description',
-    result: 'Description',
-    tags: ['Pentesting', 'Kali Linux', 'CTF'],
-    writeupUrl: '#',
-  },
-  {
-    type: 'depth',
-    title: 'Project Title: Project4',
-    challenge: 'Description',
-    action: 'Description',
-    result: 'Description',
-    tags: ['Security Audit', 'OWASP'],
-    githubUrl: '#', // สามารถใช้ GitHub link เป็น Pull Request
-  },
-  // *** คุณสามารถเพิ่มโปรเจกต์ที่ 5, 6, 7 ที่นี่ได้เลย! ***
-  // {
-  //   type: 'breadth',
-  //   title: 'Project 5: My New AWS Project',
-  //   ...
-  // },
-];
-
-// =======================================================
-// STEP 2: การควบคุมการแสดงผล (แยกโปรเจกต์)
-// =======================================================
-// เรากรองโปรเจกต์ตาม 'type'
+// กรองและจำกัด (เหมือนเดิม)
 const breadthProjects = allProjects.filter(p => p.type === 'breadth');
 const depthProjects = allProjects.filter(p => p.type === 'depth');
-
-// *** นี่คือหัวใจ! ***
-// เรา "จำกัด" จำนวนโปรเจกต์ที่จะโชว์ในหน้าแรก
 const MAX_PROJECTS_PER_CATEGORY = 2;
 ---
 
-<section 
-  id="projects" 
-  class="py-20 md:py-32 bg-white"
->
+<section id="projects" class="py-20 md:py-32 bg-white">
   <div class="container mx-auto px-6 max-w-6xl">
     
     <div class="text-center mb-16">
@@ -96,68 +25,22 @@ const MAX_PROJECTS_PER_CATEGORY = 2;
       <h3 class="text-2xl md:text-3xl font-bold text-gray-900 mb-8 text-center md:text-left">
         The Breadth <span class="text-blue-600">(Building & Leading)</span>
       </h3>
-      
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        
         {breadthProjects.slice(0, MAX_PROJECTS_PER_CATEGORY).map(project => (
-          <article class="bg-gray-50 rounded-lg shadow-lg border border-gray-200 overflow-hidden flex flex-col">
-            <div class="p-6 flex flex-col h-full">
-              <div class="flex flex-wrap gap-2 mb-4">
-                {project.tags.map(tag => (
-                  <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">{tag}</span>
-                ))}
-              </div>
-              <h4 class="text-xl font-bold text-gray-900 mb-2">{project.title}</h4>
-              <p class="text-gray-600 mb-4 text-sm leading-relaxed">
-                <strong>Challenge:</strong> {project.challenge}
-                <br/>
-                <strong>Action:</strong> {project.action}
-                <br/>
-                <strong>Result:</strong> {project.result}
-              </p>
-              <div class="flex gap-4 mt-auto">
-                {project.githubUrl && <a href={project.githubUrl} class="text-blue-600 hover:underline font-semibold">GitHub &rarr;</a>}
-                {project.demoUrl && <a href={project.demoUrl} class="text-blue-600 hover:underline font-semibold">Live Demo &rarr;</a>}
-                {project.writeupUrl && <a href={project.writeupUrl} class="text-blue-600 hover:underline font-semibold">Read Writeup &rarr;</a>}
-              </div>
-            </div>
-          </article>
+          <ProjectCard project={project} />
         ))}
-        </div>
+      </div>
     </div>
 
     <div>
       <h3 class="text-2xl md:text-3xl font-bold text-gray-900 mb-8 text-center md:text-left">
         The Depth <span class="text-purple-600">(Securing & Analyzing)</span>
       </h3>
-      
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        
         {depthProjects.slice(0, MAX_PROJECTS_PER_CATEGORY).map(project => (
-          <article class="bg-gray-50 rounded-lg shadow-lg border border-gray-200 overflow-hidden flex flex-col">
-            <div class="p-6 flex flex-col h-full">
-              <div class="flex flex-wrap gap-2 mb-4">
-                {project.tags.map(tag => (
-                  <span class="bg-purple-100 text-purple-800 text-xs font-semibold px-2.5 py-0.5 rounded">{tag}</span>
-                ))}
-              </div>
-              <h4 class="text-xl font-bold text-gray-900 mb-2">{project.title}</h4>
-              <p class="text-gray-600 mb-4 text-sm leading-relaxed">
-                <strong>Challenge:</strong> {project.challenge}
-                <br/>
-                <strong>Action:</strong> {project.action}
-                <br/>
-                <strong>Result:</strong> {project.result}
-              </p>
-              <div class="flex gap-4 mt-auto">
-                {project.githubUrl && <a href={project.githubUrl} class="text-purple-600 hover:underline font-semibold">GitHub &rarr;</a>}
-                {project.demoUrl && <a href={project.demoUrl} class="text-purple-600 hover:underline font-semibold">Live Demo &rarr;</a>}
-                {project.writeupUrl && <a href={project.writeupUrl} class="text-purple-600 hover:underline font-semibold">Read Writeup &rarr;</a>}
-              </div>
-            </div>
-          </article>
+          <ProjectCard project={project} />
         ))}
-        </div>
+      </div>
     </div>
 
     <div class="text-center mt-16">
@@ -168,5 +51,6 @@ const MAX_PROJECTS_PER_CATEGORY = 2;
         View All My Initiatives &rarr;
       </a>
     </div>
+
   </div>
 </section>
